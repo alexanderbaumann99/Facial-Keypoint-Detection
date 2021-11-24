@@ -36,15 +36,16 @@ if __name__=="__main__":
     }
 
     logger = TensorBoardLogger(save_dir='lightning_logs')
-    model=KeypointModel(hparam,logger,train_dataset,val_dataset)
-    early_stop=EarlyStopping(monitor='val_loss',patience=4)
+    model=KeypointModel(hparam,train_dataset,val_dataset)
+    early_stop=EarlyStopping(monitor='train_loss',patience=6)
 
-    trainer=pl.Trainer( max_epochs=30,
-                        gpus=-1,
-                        #callbacks=[early_stop]
-                        )
+    trainer=pl.Trainer(max_epochs=30,
+                       gpus=-1,
+                       callbacks=[early_stop],
+                       logger=logger
+                       )
 
-    trainer.fit(model)
+    trainer.fit(model,train_dataset,val_dataset)
 
     trainer.save_checkpoint("saved_model/facial_model.ckpt")
     
