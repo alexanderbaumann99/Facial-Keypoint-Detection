@@ -45,36 +45,30 @@ class ResBlock(nn.Module):
 
 class KeypointModel(pl.LightningModule):
     """Facial keypoint detection model"""
-    def __init__(self,hparams,logger=None,train_set=None,val_set=None):
+    def __init__(self,hparams,train_set=None,val_set=None):
         """
         Initialize your model from a given dict containing all your hparams
         Warning: Don't change the method declaration (i.e. by adding more
             arguments), otherwise it might not work on the submission server
         """
-        #KeypointModel, self
+     
         super().__init__()
-        #self.hparams = hparams
+     
 
         ########################################################################
-        # TODO: Define all the layers of your CNN, the only requirements are:  #
+        #                                                                      #
         # 1. The network takes in a batch of images of shape (Nx1x96x96)       #
         # 2. It ends with a linear layer that represents the keypoints.        #
         # Thus, the output layer needs to have shape (Nx30),                   #
         # with 2 values representing each of the 15 keypoint (x, y) pairs      #
         #                                                                      #
-        # Some layers you might consider including:                            #
-        # maxpooling layers, multiple conv layers, fully-connected layers,     #
-        # and other layers (such as dropout or batch normalization) to avoid   #
-        # overfitting.                                                         #
         ########################################################################
     
-        self.hparams=hparams
+        self.save_hyperparameters(hparams)
         self.data={
             'train': train_set,
             'val': val_set
         }
-        if logger is not None:
-            self.logger=logger
         
         self.conv1=nn.Conv2d(1,3,1)
         self.wide_resnet=models.wide_resnet50_2(pretrained=True)
